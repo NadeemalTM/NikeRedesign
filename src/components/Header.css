@@ -9,11 +9,15 @@
   border-bottom: 1px solid #d3c7a3;
 }
 
-.header__logo .logo-icon {
-  font-size: 2.2rem;
-  font-weight: bold;
-  color: #333;
-  letter-spacing: 0.1em;
+.header__logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
 }
 
 .header__nav {
@@ -27,11 +31,37 @@
   font-weight: 500;
   font-family: inherit;
   font-size: 1.08rem;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  position: relative;
+}
+
+.header__nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: #222;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
 
 .header__nav a:hover {
-  color: #888;
+  color: #111;
+  border-color: rgba(34, 34, 34, 0.1);
+  background-color: rgba(34, 34, 34, 0.05);
+}
+
+.header__nav a:hover::after {
+  width: 80%;
+}
+
+.header__nav a:active {
+  transform: scale(0.95);
 }
 
 .header__icons {
@@ -40,6 +70,83 @@
   font-size: 1.35rem;
   color: #222;
   align-items: center;
+}
+
+.icon-button {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #222;
+}
+
+.icon-button:hover {
+  transform: scale(1.1);
+  color: #000;
+}
+
+.icon-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Update search button styles */
+.search-button svg {
+  width: 20px;
+  height: 20px;
+  color: #222;
+}
+
+.search-button:hover svg {
+  color: #000;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 0.3rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.search-container:hover {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  width: 0;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.search-container:hover .search-input {
+  width: 180px;
+}
+
+.search-button {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.search-button:hover {
+  transform: scale(1.1);
 }
 
 @media (max-width: 700px) {
@@ -53,5 +160,8 @@
   }
   .header__icons {
     gap: 1rem;
+  }
+  .search-container:hover .search-input {
+    width: 140px;
   }
 }
