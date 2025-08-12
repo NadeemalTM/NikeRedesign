@@ -1,25 +1,16 @@
-import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/navbar";
+import Home from "./pages/home";
+import Footer from "./components/Footer";
 import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <Navbar />
-        <main>
-          <section className="hero">
-            <h1>Welcome to Nike</h1>
-            <p>Scroll down to see navbar animation</p>
-          </section>
-          {/* Add more sections to enable scrolling */}
-          <section className="content">
-            <div className="placeholder"></div>
-          </section>
-        </main>
-      </div>
-    </Router>
+    <>
+      <Navbar />
+      <Home />
+      <Footer />
+      
+    </>
   );
 }
 
