@@ -7,6 +7,12 @@ html, body {
   overflow-x: hidden;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -37,6 +43,17 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  position: relative;
 }
 
 h1 {

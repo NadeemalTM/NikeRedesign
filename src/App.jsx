@@ -1,18 +1,25 @@
 import React from "react";
-import Header from "./components/Header";
-import HeroBody from "./components/HeroBody";
-import HomeBody from "./components/HomeBody";
+import { BrowserRouter as Router } from "react-router-dom";
+import Navbar from "./components/navbar";
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <Header />
-      <main className="main-content">
-        <HeroBody />
-        <HomeBody />
-      </main>
-    </>
+    <Router>
+      <div className="app">
+        <Navbar />
+        <main>
+          <section className="hero">
+            <h1>Welcome to Nike</h1>
+            <p>Scroll down to see navbar animation</p>
+          </section>
+          {/* Add more sections to enable scrolling */}
+          <section className="content">
+            <div className="placeholder"></div>
+          </section>
+        </main>
+      </div>
+    </Router>
   );
 }
 

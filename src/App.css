@@ -10,73 +10,42 @@ html, body {
   overflow-x: hidden;
 }
 
-.main-content {
-  width: 100%;
-  min-height: 100vh;
-  padding-top: 950px; /* Height of header */
-  background: #ffffff;
-}
-
 #root {
   position: relative;
   min-height: 100vh;
   width: 100%;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.app {
+  min-height: 200vh; /* Makes page scrollable */
+  display: flex;
+  flex-direction: column;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+main {
+  flex: 1;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff3cd;
+  padding-top: 80px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.content {
+  padding: 2rem;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-.main-gray-bg {
-  min-height: 100vh;
-  width: 100vw;
-  background: #ffffff;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  position: relative;
-}
-
-/* Reset default margins and padding */
-html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+.placeholder {
+  height: 1000px; /* Creates scrollable content */
+  background: linear-gradient(to bottom, #fff3cd, #ffffff);
 }
