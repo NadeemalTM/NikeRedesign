@@ -1,0 +1,38 @@
+/* Custom styles for the Shop Page */
+
+/* Example: A subtle box shadow for the product cards,
+   in addition to the default Tailwind 'shadow-md' */
+.product-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Example: A custom focus state for buttons or select elements */
+.custom-focus-ring:focus {
+  outline: 2px solid #3b82f6; /* A blue color */
+  outline-offset: 2px;
+}
+
+/* Example: Style the main content area for a consistent layout */
+.shop-page-main {
+  max-width: 1200px; /* or a specific width for your design */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem; /* Adjust padding as needed */
+}
+
+/* Example: Adjust the image size and fit if not using Tailwind's `object-cover` */
+.product-image {
+  width: 100%;
+  height: 256px; /* A fixed height, for example, 256px */
+  object-fit: cover;
+}
+
+/* Example: A custom border color for the header */
+.shop-header-border {
+  border-bottom: 1px solid #e5e7eb;
+}
