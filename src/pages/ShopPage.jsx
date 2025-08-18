@@ -1,98 +1,169 @@
 import React from 'react';
-import './shoppage.css';
+import './ShopPage.css';
+
+import image1 from '../assets/1.png';
+import image2 from '../assets/2.png';
+import image3 from '../assets/3.png';
+import image4 from '../assets/4.png';
+import image5 from '../assets/5.png';
+import image6 from '../assets/6.png';
+import image7 from '../assets/7.png';
+import image8 from '../assets/8.png';
+import image9 from '../assets/9.png';
+import image10 from '../assets/10.png';
+import banner from '../assets/shopbanner.png';
+// Fallback images if the original assets are not found.
+const placeholderImage = "../assets/shopbanner.png"; // Replace with your placeholder image path
+
+const productImages = [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10];
 
 const products = [
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/1.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/2.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/3.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/4.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/5.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/6.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/7.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/8.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/9.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/10.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/shoe1.png" },
-  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00", image: "/src/assets/shoe2.png" },
-];
+  { name: "New Balance Trenton Pink Retro Runner", price: "Rs. 25,000.00" },
+  { name: "Nike Air Max 90 Orange Rush", price: "Rs. 25,000.00" },
+  { name: "Nike Court Vision Low Duo Pack", price: "Rs. 25,000.00" },
+  { name: "Adidas Classic White Street Sneaker", price: "Rs. 25,000.00" },
+  { name: "Nike Air Max Plus Black Forest", price: "Rs. 15,000.00" },
+  { name: "Nike Air Force 1 'Yacht Blue Court Fury'", price: "Rs. 225,000.00" },
+  { name: "Nike Zoom Freak 4 - Gray Fury", price: "Rs. 251,000.00" },
+  { name: "Reebok Nana X3 - Training Core", price: "Rs. 25,200.00" },
+  { name: "Puma White Leather Classic", price: "Rs. 258,200.00" },
+  { name: "Nike Air Zoom 90s Grey/Green", price: "Rs. 20,000.00" },
+  { name: "Nike Kobe Mamba Flyknit - Yellow Lime", price: "Rs. 200,000.00" },
+  { name: "Nike Air Zoom Bella 6 - VCR Edition", price: "Rs. 100,000.00" },
+  { name: "Converse Chuck 70 - Rust Orange High", price: "Rs. 258,800.00" },
+  { name: "Jordan Jumpman Two Trey - White Ice", price: "Rs. 250,000.00" },
+  { name: "Cole Haan Wingtip Oxford - Urban Charcoal", price: "Rs. 115,000.00" },
+  { name: "Nike Zoom Freak 4 - Thunderstorm", price: "Rs. 244,000.00" },
+].map((product, index) => ({
+  ...product,
+  image: productImages[index % productImages.length] || placeholderImage,
+}));
 
 const ShopPage = () => {
   return (
-    <div className="bg-gray-100 font-sans">
-      <header className="bg-white py-8">
-        <div className="container mx-auto text-center">
-          <h1 className="text-5xl font-bold">Shop</h1>
-          <p className="text-gray-500 mt-2">Home &gt; Shop</p>
+    <div className="bg-white font-sans min-h-screen">
+      {/* Enhanced Top Section with Background Image Banner */}
+      <div className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${banner})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
         </div>
-      </header>
+        
+        <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6">
+              Welcome to Our Premium Collection
+            </h1>
+            <p className="text-lg md:text-xl lg:text-2xl text-gray-200 mb-6 md:mb-8 max-w-2xl mx-auto">
+              Discover exclusive sneakers and limited edition releases from top brands
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                Shop Now
+              </button>
+              <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300">
+                View Collection
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </div>
 
-      <main className="container mx-auto mt-8 p-4">
-        <div className="flex justify-between items-center bg-gray-200 p-4 rounded-t-lg">
-          <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8">
+        {/* Product Controls / Filter Bar */}
+        <div className="filter-controls">
+          <div className="filter-left">
+            <button className="filter-button">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
               <span>Filter</span>
             </button>
-            <div className="flex space-x-2">
-              <button><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg></button>
-              <button><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></button>
+            <div className="view-toggle-buttons">
+              <button className="view-toggle-button active">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+              </button>
+              <button className="view-toggle-button">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              </button>
             </div>
-            <p className="text-gray-600">Showing 1-16 of 32 results</p>
+            <p className="results-count">Showing 1-16 of 32 results</p>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <label htmlFor="show">Show</label>
-              <select id="show" className="border rounded p-1">
+          <div className="filter-right">
+            <div className="filter-select-group">
+              <label htmlFor="show" className="filter-select-label">Show</label>
+              <select id="show" className="filter-select">
                 <option>16</option>
+                <option>32</option>
+                <option>64</option>
               </select>
             </div>
-            <div className="flex items-center space-x-2">
-              <label htmlFor="sort">Sort by</label>
-              <select id="sort" className="border rounded p-1">
+            <div className="filter-select-group">
+              <label htmlFor="sort" className="filter-select-label">Sort by</label>
+              <select id="sort" className="filter-select">
                 <option>Default</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+                <option>Name: A-Z</option>
               </select>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-8">
+        {/* Product Grid - 4 cards per row */}
+        <div className="product-grid">
           {products.map((product, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img src={product.image} alt={product.name} className="w-full h-64 object-cover" />
-              <div className="p-4 text-center">
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-gray-500 mt-2">{product.price}</p>
+            <div key={index} className="product-card">
+              <img src={product.image} alt={product.name} onError={(e) => { e.target.onerror = null; e.target.src=placeholderImage; }}/>
+              <div className="product-info">
+                <h3>{product.name}</h3>
+                <p>{product.price}</p>
+                <button className="add-to-cart-btn">Add To Cart</button>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center mt-8">
-          <nav className="flex space-x-2">
-            <button className="px-4 py-2 bg-black text-white rounded-md">1</button>
-            <button className="px-4 py-2 border rounded-md">2</button>
-            <button className="px-4 py-2 border rounded-md">3</button>
-            <button className="px-4 py-2 border rounded-md">Next</button>
-          </nav>
+        {/* Pagination */}
+        <div className="pagination">
+          <button className="pagination-button">1</button>
+          <button className="pagination-button active">2</button>
+          <button className="pagination-button">3</button>
+          <button className="pagination-button next">Next</button>
         </div>
       </main>
 
-      <section className="bg-gray-200 mt-16">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center py-12">
-          <div>
-            <h4 className="text-xl font-bold">Free Delivery</h4>
-            <p className="text-gray-600 mt-2">Worldwide delivery on all orders. Over $150.</p>
-          </div>
-          <div>
-            <h4 className="text-xl font-bold">90 Days Return</h4>
-            <p className="text-gray-600 mt-2">No question ask. We have an easy return policy.</p>
-          </div>
-          <div>
-            <h4 className="text-xl font-bold">Secure Payment</h4>
-            <p className="text-gray-600 mt-2">We use the most secure payment gateways.</p>
+      {/* Enhanced Bottom Section */}
+      <div className="bottom-section bg-gradient-to-r from-gray-900 to-gray-700 text-white py-16">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-4">Stay Connected</h2>
+          <p className="text-lg text-gray-300 mb-8">Join our newsletter for exclusive drops and early access to new releases</p>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              className="flex-1 px-4 py-3 rounded-lg text-gray-900"
+            />
+            <button className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              Subscribe
+            </button>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

@@ -9,6 +9,7 @@
   height: 500px; /* Adjust height as needed */
   display: flex;
   align-items: center;
+  margin-top: 85px;
   padding: 0 5rem;
   color: #413c3c; /* Text color for overlay */
   position: relative;
