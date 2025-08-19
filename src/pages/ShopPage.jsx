@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ShopPage.css';
+import './ShopPage-fixed.css';
 
 // Import product images
 import image1 from '../assets/1.png';
@@ -154,15 +155,26 @@ const ShopPage = () => {
               <div className="product-info">
                 <h3>{product.name}</h3>
                 <p>{product.price}</p>
-                <button 
-                  className="add-to-cart-btn" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Add to cart functionality here
-                  }}
-                >
-                  Add To Cart
-                </button>
+                <div className="flex justify-end gap-2 mt-4">
+                  <button 
+                    className="shop-now-btn" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProductClick(product.id);
+                    }}
+                  >
+                    Shop Now
+                  </button>
+                  <button 
+                    className="add-to-cart-btn" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Add to cart functionality here
+                    }}
+                  >
+                    Add To Cart
+                  </button>
+                </div>
               </div>
             </div>
           ))}
