@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './ProductPage.css';
+import './ProductPage-fixed.css';
 
 // Import product images
 import image1 from '../assets/1.png';
@@ -64,7 +65,7 @@ const ProductPage = () => {
   return (
     <div className="product-page">
       <div className="breadcrumb">
-        <span>Home > Shop > {product.name}</span>
+<span>Home {'>'} Shop {'>'} {product ? product.name : 'Product Not Found'}</span>
       </div>
 
       <div className="product-details-container">
@@ -84,7 +85,7 @@ const ProductPage = () => {
             ))}
           </div>
           <div className="main-image">
-            <img src={productImages[parseInt(id) - 1] || productImages[0]} alt={product.name} className="w-full h-full object-cover" />
+            <img src={productImages[parseInt(id) - 1] || productImages[0]} alt={product.name} />
           </div>
         </div>
         <div className="product-info">
