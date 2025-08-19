@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ShopPage.css';
 
+// Import product images
 import image1 from '../assets/1.png';
 import image2 from '../assets/2.png';
 import image3 from '../assets/3.png';
@@ -12,8 +14,11 @@ import image8 from '../assets/8.png';
 import image9 from '../assets/9.png';
 import image10 from '../assets/10.png';
 import banner from '../assets/shopbanner.png';
-// Fallback images if the original assets are not found.
-const placeholderImage = "../assets/shopbanner.png"; // Replace with your placeholder image path
+
+// Import banner image
+import bannerImage from '../assets/shopbanner.png';
+// fallback image
+const placeholderImage = banner;
 
 const productImages = [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10];
 
@@ -36,21 +41,31 @@ const products = [
   { name: "Nike Zoom Freak 4 - Thunderstorm", price: "Rs. 244,000.00" },
 ].map((product, index) => ({
   ...product,
+  id: index + 1,
   image: productImages[index % productImages.length] || placeholderImage,
 }));
 
 const ShopPage = () => {
+  const navigate = useNavigate();
+
+    const handleProductClick = (productId) => {
+        console.log(`Product clicked: ${productId} - function triggered`);
+        navigate(`/product/${productId}`);
+  };
+  
   return (
     <div className="bg-white font-sans min-h-screen">
       {/* Enhanced Top Section with Background Image Banner */}
       <div className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
-        <div 
+        {/* Background Image */}
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${banner})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
         </div>
-        
+
+        {/* Hero Content */}
         <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
           <div className="max-w-4xl">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6">
@@ -69,7 +84,7 @@ const ShopPage = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,15 +139,30 @@ const ShopPage = () => {
           </div>
         </div>
 
-        {/* Product Grid - 4 cards per row */}
+        {/* Product Grid */}
         <div className="product-grid">
           {products.map((product, index) => (
-            <div key={index} className="product-card">
+            <div 
+              key={index} 
+              className="product-card cursor-pointer"
+              onClick={() => {
+                console.log(`Product clicked: ${product.id} - navigating to /product/${product.id}`);
+                handleProductClick(product.id);
+              }}
+            >
               <img src={product.image} alt={product.name} onError={(e) => { e.target.onerror = null; e.target.src=placeholderImage; }}/>
               <div className="product-info">
                 <h3>{product.name}</h3>
                 <p>{product.price}</p>
-                <button className="add-to-cart-btn">Add To Cart</button>
+                <button 
+                  className="add-to-cart-btn" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Add to cart functionality here
+                  }}
+                >
+                  Add To Cart
+                </button>
               </div>
             </div>
           ))}
@@ -147,20 +177,26 @@ const ShopPage = () => {
         </div>
       </main>
 
-      {/* Enhanced Bottom Section */}
-      <div className="bottom-section bg-gradient-to-r from-gray-900 to-gray-700 text-white py-16">
+      {/* Enhanced Newsletter Section */}
+      <div className="bottom-section text-white py-20">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-3xl font-bold mb-4">Stay Connected</h2>
           <p className="text-lg text-gray-300 mb-8">Join our newsletter for exclusive drops and early access to new releases</p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
-              className="flex-1 px-4 py-3 rounded-lg text-gray-900"
-            />
-            <button className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Subscribe
-            </button>
+          <div className="newsletter-form-container">
+            <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                className="newsletter-email-input"
+                required
+              />
+              <button 
+                type="submit"
+                className="newsletter-subscribe-btn"
+              >
+                Subscribe
+              </button>
+            </form>
           </div>
         </div>
       </div>
