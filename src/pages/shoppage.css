@@ -163,14 +163,14 @@ body {
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+  background: linear-gradient(135deg, #120b0b 0%, #62666d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .max-w-4xl p {
   font-size: clamp(1.125rem, 2.5vw, 1.5rem);
-  color: #e5e7eb;
+  color: #01194b3d;
   margin-bottom: 2rem;
   max-width: 600px;
   margin-left: auto;
@@ -196,7 +196,7 @@ body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 .flex.flex-col.sm\:flex-row.gap-4.justify-center button:first-child {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(254, 221, 121, 0.836);
   color: #000000;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
@@ -207,7 +207,7 @@ body {
 }
 .flex.flex-col.sm\:flex-row.gap-4.justify-center button:last-child {
   background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: #0c0000;
   border: 2px solid #ffffff;
 }
 .flex.flex-col.sm\:flex-row.gap-4.justify-center button:last-child:hover {
@@ -380,7 +380,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: inline-block;
-  min-width: 120px;
+  min-width: 200px;
 }
 
 .product-card .add-to-cart-btn:hover {
@@ -392,6 +392,79 @@ body {
 .product-card .add-to-cart-btn:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Shop Now Button Styling */
+.product-card .shop-now-btn {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  min-width: 120px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+.product-card .shop-now-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.product-card .shop-now-btn:hover::before {
+  left: 100%;
+}
+
+.product-card .shop-now-btn:hover {
+  background: linear-gradient(135deg, #ff8c42 0%, #ffa726 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+}
+
+.product-card .shop-now-btn:active {
+  transform: translateY(0) scale(1.02);
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+/* Button container spacing */
+.product-card .flex.justify-end.gap-2 {
+  margin-top: 1.5rem;
+}
+
+/* Ensure buttons have proper spacing on mobile */
+@media (max-width: 768px) {
+  .product-card .flex.justify-end.gap-2 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .product-card .shop-now-btn,
+  .product-card .add-to-cart-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Focus states for accessibility */
+.product-card .shop-now-btn:focus-visible,
+.product-card .add-to-cart-btn:focus-visible {
+  outline: 2px solid #ff6b35;
+  outline-offset: 2px;
 }
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
