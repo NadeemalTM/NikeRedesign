@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ShopPage.css';
-import './ShopPage-fixed.css';
+
 
 // Import product images
 import image1 from '../assets/1.png';
@@ -14,12 +14,7 @@ import image7 from '../assets/7.png';
 import image8 from '../assets/8.png';
 import image9 from '../assets/9.png';
 import image10 from '../assets/10.png';
-import banner from '../assets/shopbanner.png';
-
-// Import banner image
-import bannerImage from '../assets/shopbanner.png';
-// fallback image
-const placeholderImage = banner;
+import placeholderImage from "../assets/shopbanner.png";
 
 const productImages = [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10];
 
@@ -56,15 +51,18 @@ const ShopPage = () => {
   
   return (
     <div className="bg-white font-sans min-h-screen">
-      {/* Enhanced Top Section with Background Image Banner */}
-      <div className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${banner})` }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
-        </div>
+      {/* Enhanced Top Section with Animated Background */}
+      <div className="animated-banner relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        
+        <div className="glowing-orb"></div>
+        <div className="glowing-orb"></div>
+        <div className="glowing-orb"></div>
 
         {/* Hero Content */}
         <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
