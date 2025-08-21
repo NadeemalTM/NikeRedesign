@@ -4,6 +4,8 @@ import Footer from "./components/Footer";
 import HomePage from "./pages/home";
 import ShopPage from "./pages/ShopPage";
 import ProductPage from "./pages/ProductPage";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import "./App.css";
 
 function App() {
@@ -14,6 +16,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
       <Footer />
     </>

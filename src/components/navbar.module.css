@@ -147,6 +147,36 @@
   box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.2);
 }
 
+.accountContainer {
+  display: flex;
+  align-items: center;
+}
+
+.signinLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #111;
+  color: white;
+  text-decoration: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.signinLink:hover {
+  background-color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.signinLink i {
+  font-size: 0.9rem;
+}
+
 .searchContainer {
   position: relative;
   display: flex;
@@ -270,8 +300,4 @@
     width: 200px;
     right: 120%;
   }
-}
-
-.searchBar.open input {
-  animation: fadeIn 0.3s ease forwards;
 }

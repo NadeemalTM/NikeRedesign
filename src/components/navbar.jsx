@@ -33,8 +33,10 @@ const Navbar = () => {
 
       <div className={styles.actions}>
         <div className={styles.accountContainer}>
-          
-          
+          <Link to="/signin" className={styles.signinLink}>
+            <i className="fas fa-user"></i>
+            Sign In
+          </Link>
         </div>
         <div className={styles.searchContainer}>
           <button 
