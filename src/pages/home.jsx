@@ -1,5 +1,6 @@
 // src/pages/Home.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './home.css';
 import banner1 from '../assets/banner1.jpg';
 import banner2 from '../assets/banner2.jpg';
@@ -140,9 +141,32 @@ const ProductCards = () => {
 };
 
 const HomePage = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.role === 'admin') {
+      setIsAdmin(true);
+    }
+  }, []);
+
+  const handleAddProduct = () => {
+    navigate('/admin-dashboard');
+  };
+
   return (
     <div>
       <HeroBanner />
+      
+      {isAdmin && (
+        <div className="admin-section">
+          <button className="add-product-btn" onClick={handleAddProduct}>
+            Add New Product
+          </button>
+        </div>
+      )}
+      
       <FeatureGrids />
       <ProductCards />
     </div>

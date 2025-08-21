@@ -53,13 +53,33 @@ const SignIn = () => {
     
     setIsLoading(true);
     
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Sign in successful:', formData);
-      // Here you would typically redirect or update auth state
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Store token and user info
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Redirect based on role
+        if (data.user.role === 'admin') {
+          window.location.href = '/admin-dashboard';
+        } else {
+          window.location.href = '/';
+        }
+      } else {
+        setErrors({ general: data.message || 'Login failed' });
+      }
     } catch (error) {
-      console.error('Sign in failed:', error);
+      setErrors({ general: 'Network error. Please try again.' });
     } finally {
       setIsLoading(false);
     }
