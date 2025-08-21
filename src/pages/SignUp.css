@@ -8,6 +8,7 @@
   background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
   padding: 20px;
   font-family: 'Helvetica Neue', Arial, sans-serif;
+  margin-top: 85px;
 }
 
 .signup-wrapper {
@@ -61,7 +62,7 @@
   margin-bottom: 25px;
 }
 
-.form-label {
+.form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
@@ -69,8 +70,12 @@
   font-size: 0.95rem;
 }
 
-.form-input,
-.form-select {
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group select {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid #ddd;
@@ -78,20 +83,31 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   background-color: #fafafa;
+  box-sizing: border-box;
 }
 
-.form-input:focus,
-.form-select:focus {
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="tel"]:focus,
+.form-group input[type="date"]:focus,
+.form-group select:focus {
   outline: none;
   border-color: #111;
   background-color: white;
   box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.1);
 }
 
-.form-input.error,
-.form-select.error {
+.form-group input.error,
+.form-group select.error {
   border-color: #e74c3c;
   background-color: #fdf2f2;
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
 }
 
 .error-message {
@@ -256,15 +272,11 @@
   .signup-form-container {
     padding: 30px 20px;
   }
-
-  .signup-title {
-    font-size: 1.8rem;
-  }
 }
 
 /* Focus styles for accessibility */
-.form-input:focus-visible,
-.form-select:focus-visible {
+.form-group input:focus-visible,
+.form-group select:focus-visible {
   outline: 2px solid #111;
   outline-offset: 2px;
 }
