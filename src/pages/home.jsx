@@ -347,7 +347,7 @@ const HomePage = () => {
     }
   }, []);
 
-  const handleAddProduct = () => {
+  const handleDashboard = () => {
     navigate('/admin-dashboard');
   };
 
@@ -357,8 +357,8 @@ const HomePage = () => {
       
       {isAdmin && (
         <div className="admin-section">
-          <button className="admin-button" onClick={handleAddProduct}>
-            Add New Product
+          <button className="admin-button" onClick={handleDashboard}>
+            Dashboard
           </button>
         </div>
       )}

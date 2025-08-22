@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './navbar.module.css';
 import ShopPage from '../pages/ShopPage';
@@ -6,11 +6,26 @@ import ShopPage from '../pages/ShopPage';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // Handle navbar background change on scroll
-  window.addEventListener('scroll', () => {
-    window.scrollY > 50 ? setIsScrolled(true) : setIsScrolled(false);
-  });
+  useEffect(() => {
+    // Handle navbar background change on scroll
+    const handleScroll = () => {
+      window.scrollY > 50 ? setIsScrolled(true) : setIsScrolled(false);
+    };
+
+    // Check if user is admin
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.role === 'admin') {
+      setIsAdmin(true);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
@@ -29,6 +44,9 @@ const Navbar = () => {
         <li><Link to="/shop">Shop</Link></li>
         <li><Link to="/about">About</Link></li>
         <li><Link to="/contact">Contact</Link></li>
+        {isAdmin && (
+          <li><Link to="/admin-dashboard" className={styles.adminLink}>Dashboard</Link></li>
+        )}
       </ul>
 
       <div className={styles.actions}>
