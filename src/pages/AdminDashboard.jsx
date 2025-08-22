@@ -12,9 +12,12 @@ const AdminDashboard = () => {
     price: '',
     category: '',
     stock: '',
-    image: ''
+    image: '',
+    brand: 'Nike'
   });
   const [imageFile, setImageFile] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +66,8 @@ const AdminDashboard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
     
     const formDataToSend = new FormData();
     Object.keys(formData).forEach(key => {
@@ -92,12 +97,19 @@ const AdminDashboard = () => {
           price: '',
           category: '',
           stock: '',
-          image: ''
+          image: '',
+          brand: 'Nike'
         });
         setImageFile(null);
+        setSuccess('Product added successfully!');
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to add product');
       }
     } catch (error) {
       console.error('Error adding product:', error);
+      setError('Network error. Please try again.');
     }
   };
 
@@ -142,6 +154,9 @@ const AdminDashboard = () => {
           </button>
         </div>
       </div>
+
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
 
       <div className="products-grid">
         {products.map(product => (
