@@ -162,9 +162,13 @@ const AdminDashboard = () => {
         {products.map(product => (
           <div key={product._id} className="product-card">
             <img 
-              src={product.image || '/placeholder.jpg'} 
+              src={product.image ? `http://localhost:5000${product.image}` : '/placeholder.jpg'} 
               alt={product.name} 
               className="product-image"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/placeholder.jpg';
+              }}
             />
             <div className="product-info">
               <h3>{product.name}</h3>

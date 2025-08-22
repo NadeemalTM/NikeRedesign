@@ -8,6 +8,7 @@ const ProductCard = ({
   onProductClick
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   // Handle wishlist button click
   const handleWishlistClick = (e) => {
@@ -28,7 +29,7 @@ const ProductCard = ({
   // Handle product card click
   const handleCardClick = () => {
     if (onProductClick) {
-      onProductClick(product.id);
+      onProductClick(product._id || product.id);
     }
   };
 
@@ -61,6 +62,34 @@ const ProductCard = ({
     return num.toString();
   };
 
+  // Construct proper image URL
+  const getImageUrl = () => {
+    if (!product.image) return '/placeholder.jpg';
+    
+    // If image is already a full URL, use it directly
+    if (product.image.startsWith('http')) {
+      return product.image;
+    }
+    
+    // If image starts with /uploads, construct full backend URL
+    if (product.image.startsWith('/uploads/')) {
+      return `http://localhost:5000${product.image}`;
+    }
+    
+    // If it's just a filename, assume it's in uploads
+    if (!product.image.startsWith('/')) {
+      return `http://localhost:5000/uploads/${product.image}`;
+    }
+    
+    return product.image;
+  };
+
+  const handleImageError = (e) => {
+    setImageError(true);
+    e.target.onerror = null;
+    e.target.src = '/placeholder.jpg';
+  };
+
   return (
     <div 
       className="product-card"
@@ -71,13 +100,11 @@ const ProductCard = ({
       {/* Product Image with Hover Actions */}
       <div className="product-image-container">
         <img 
-          src={product.image} 
+          src={imageError ? '/placeholder.jpg' : getImageUrl()} 
           alt={product.name} 
           className="product-image"
-          onError={(e) => { 
-            e.target.onerror = null; 
-            e.target.src = "/placeholder-image.png"; 
-          }}
+          onError={handleImageError}
+          loading="lazy"
         />
         
         {/* Hover Action Buttons */}
