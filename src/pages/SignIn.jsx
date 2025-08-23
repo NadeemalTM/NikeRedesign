@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useToast } from '../context/ToastContext';
 import './SignIn.css';
 
 const SignIn = () => {
+  const { success } = useToast();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -68,6 +70,9 @@ const SignIn = () => {
         // Store token and user info
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Show success message
+        success('Successfully signed in! Welcome back!');
         
         // Redirect based on role
         if (data.user.role === 'admin') {

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import './ProductPage.css';
 import './ProductPage-fixed.css';
 
@@ -14,6 +16,21 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [imageError, setImageError] = useState(false);
+  const { addToCart } = useCart();
+  const { success, error: showError } = useToast();
+
+  // Handle add to cart
+  const handleAddToCart = async () => {
+    if (!product) return;
+
+    const result = await addToCart(product, quantity, selectedSize, selectedColor);
+    
+    if (result.success) {
+      success('Product added to cart successfully!');
+    } else {
+      showError(result.error || 'Failed to add product to cart');
+    }
+  };
 
   // Construct proper image URL
   const getImageUrl = (imagePath) => {
@@ -170,7 +187,9 @@ const ProductPage = () => {
               <span>{quantity}</span>
               <button onClick={() => setQuantity(quantity + 1)}>+</button>
             </div>
-            <button className="add-to-cart">Add To Cart</button>
+            <button className="add-to-cart" onClick={handleAddToCart}>
+              Add To Cart
+            </button>
           </div>
           <div className="metadata">
             <p><strong>SKU</strong> : SS001</p>

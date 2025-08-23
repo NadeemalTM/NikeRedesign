@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/navbar";
+import Navbar from "./components/navbar"; 
+import { ToastProvider } from "./context/ToastContext"; 
+import Toast from "./components/Toast"; 
 import Footer from "./components/Footer";
 import HomePage from "./pages/home";
 import ShopPage from "./pages/ShopPage";
@@ -9,11 +11,14 @@ import SignUp from "./pages/SignUp";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import AdminDashboard from "./pages/AdminDashboard";
+import Cart from "./pages/Cart";
+import { CartProvider } from "./context/CartContext";
 import "./App.css";
 
 function App() {
   return (
-    <>
+    <ToastProvider>
+      <CartProvider>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -24,9 +29,12 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
       <Footer />
-    </>
+      <Toast /> {/* Add Toast component here */}
+    </CartProvider>
+    </ToastProvider>
   );
 }
 

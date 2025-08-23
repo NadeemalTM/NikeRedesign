@@ -2,17 +2,26 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './navbar.module.css';
 import ShopPage from '../pages/ShopPage';
+import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { itemCount } = useCart();
 
   useEffect(() => {
     // Handle navbar background change on scroll
     const handleScroll = () => {
       window.scrollY > 50 ? setIsScrolled(true) : setIsScrolled(false);
     };
+
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
 
     // Check if user is admin
     const user = JSON.parse(localStorage.getItem('user'));
@@ -51,10 +60,17 @@ const Navbar = () => {
 
       <div className={styles.actions}>
         <div className={styles.accountContainer}>
-          <Link to="/signin" className={styles.signinLink}>
-            <i className="fas fa-user"></i>
-            Sign In
-          </Link>
+          {!isAuthenticated ? (
+            <Link to="/signin" className={styles.signinLink}>
+              <i className="fas fa-user"></i>
+              Sign In
+            </Link>
+          ) : (
+            <Link to="/profile" className={styles.signinLink}>
+              <i className="fas fa-user"></i>
+              Profile
+            </Link>
+          )}
         </div>
         <div className={styles.searchContainer}>
           <button 
@@ -78,9 +94,12 @@ const Navbar = () => {
         <button aria-label="Wishlist">
           <i className="fas fa-heart"></i>
         </button>
-        <button aria-label="Shopping Cart">
+        <Link to="/cart" className={styles.cartButton} aria-label="Shopping Cart">
           <i className="fas fa-shopping-cart"></i>
-        </button>
+          {itemCount > 0 && (
+            <span className={styles.cartBadge}>{itemCount}</span>
+          )}
+        </Link>
       </div>
     </nav>
   );

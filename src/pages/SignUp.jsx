@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useToast } from '../context/ToastContext';
 import './SignUp.css';
 
 const SignUp = () => {
+  const { success, error: showError } = useToast();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -15,6 +17,7 @@ const SignUp = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -43,12 +46,44 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log('Form submitted:', formData);
-      // Here you would typically send the data to your backend
-      alert('Sign up successful!');
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          dateOfBirth: formData.dateOfBirth,
+          gender: formData.gender
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        success('Account created successfully! Welcome to Nike!');
+        // Redirect to signin page after successful registration
+        setTimeout(() => {
+          window.location.href = '/signin';
+        }, 2000);
+      } else {
+        showError(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      showError('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import { useCart } from '../context/CartContext';
 import './ShopPage.css';
 
 const ShopPage = () => {
@@ -8,6 +9,7 @@ const ShopPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -80,7 +82,7 @@ const ShopPage = () => {
               product={product}
               onProductClick={() => handleProductClick(product._id)}
               onAddToWishlist={(product) => console.log('Add to wishlist:', product)}
-              onAddToCart={(product) => console.log('Add to cart:', product)}
+              onAddToCart={(product) => addToCart(product)}
             />
           ))}
         </div>
