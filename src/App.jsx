@@ -12,6 +12,9 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import AdminDashboard from "./pages/AdminDashboard";
 import Cart from "./pages/Cart";
+import Buy from "./pages/Buy";
+import OrderSuccess from "./pages/OrderSuccess";
+import Profile from "./pages/Profile";
 import { CartProvider } from "./context/CartContext";
 import "./App.css";
 
@@ -30,6 +33,9 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/buy" element={<Buy />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
       <Toast /> {/* Add Toast component here */}

@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import './Cart.css';
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { items, total, loading, removeFromCart, updateQuantity } = useCart();
 
   // Construct proper image URL
@@ -170,6 +172,13 @@ const Cart = () => {
               className="checkout-button"
             >
               Proceed to Checkout
+            </button>
+
+            <button 
+              onClick={() => navigate('/buy')}
+              className="buy-all-button"
+            >
+              Buy All
             </button>
 
             <p className="shipping-note">
