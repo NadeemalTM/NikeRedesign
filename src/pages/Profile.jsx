@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import './Profile.css';
 
@@ -177,6 +178,12 @@ const Profile = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
+
   if (isLoading) {
     return (
       <div className="profile-container">
@@ -283,6 +290,10 @@ const Profile = () => {
                 className="edit-profile-button"
               >
                 Edit Profile
+              </button>
+              <button onClick={handleLogout} className="signout-button">
+                <i className="fas fa-sign-out-alt"></i>
+                Sign Out
               </button>
             </div>
           ) : (

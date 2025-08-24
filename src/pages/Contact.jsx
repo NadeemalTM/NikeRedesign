@@ -75,13 +75,24 @@ const Contact = () => {
     
     setIsLoading(true);
     
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Contact form submitted:', formData);
-      setIsSubmitted(true);
+      const response = await fetch('http://localhost:5000/api/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        const errorData = await response.json();
+        setErrors({ submit: errorData.message || 'Failed to submit message. Please try again.' });
+      }
     } catch (error) {
       console.error('Submission failed:', error);
+      setErrors({ submit: 'Network error. Please check your connection and try again.' });
     } finally {
       setIsLoading(false);
     }

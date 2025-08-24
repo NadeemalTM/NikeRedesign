@@ -17,8 +17,8 @@ import img8 from '../assets/8.png';
 import img9 from '../assets/9.png';
 import img10 from '../assets/10.png';
 
-const images = [banner1, banner2, banner3];
-const heroText = "LEADERS OF THE\nPACK";
+const images = [banner1, banner2, banner3]; // Update these with new yoga/sportswear images
+const heroText = "FIND YOUR BALANCE\nWITH OUR YOGA PANTS"; // Updated hero text
 
 // Array of all 10 random images
 const allRandomImages = [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10];
@@ -95,7 +95,7 @@ const HeroBanner = () => {
             </React.Fragment>
           ))}
         </h1>
-        <p className="hero-subtitle">Discover the latest in athletic innovation</p>
+        <p className="hero-subtitle">Discover premium yoga pants and sportswear for men and women</p>
         <button className="hero-button" onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}>
           Shop Now
         </button>
@@ -132,16 +132,16 @@ const FeatureGrids = () => {
     };
   }, []);
 
-  const features = [
+const features = [
     {
-      title: "Class to Courts Fits",
-      description: "Seamlessly transition from classroom to court with versatile athletic wear",
-      image: getRandomImage()
+      title: "Yoga Essentials",
+      description: "Explore our range of comfortable and stylish yoga pants.",
+      image: getRandomImage() // Update with actual yoga pants image
     },
     {
-      title: "Strength Starts Here",
-      description: "Build your foundation with performance gear designed for power and endurance",
-      image: getRandomImage()
+      title: "Performance Sportswear",
+      description: "Discover our high-performance sportswear for every athlete.",
+      image: getRandomImage() // Update with actual sportswear image
     }
   ];
 
@@ -150,7 +150,7 @@ const FeatureGrids = () => {
       <div className={`feature-grids-container ${isVisible ? 'visible' : ''}`}>
         <div className="section-header">
           <h2 className="section-title">Featured Collections</h2>
-          <p className="section-subtitle">Curated selections for every athlete</p>
+          <p className="section-subtitle">Curated selections for yoga and active lifestyle</p>
         </div>
         <div className="feature-grids">
           {features.map((feature, index) => (
@@ -198,46 +198,29 @@ const ProductCards = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // Simulate loading products
-    setTimeout(() => {
-      const mockProducts = [
-        {
-          id: 1,
-          image: getRandomImage(),
-          name: "Air Max Pulse",
-          description: "Unisex canvas sneakers with modern comfort",
-          price: "Rs. 25,000.00",
-          category: "Lifestyle"
-        },
-        {
-          id: 2,
-          image: getRandomImage(),
-          name: "React Infinity",
-          description: "Running shoes with advanced cushioning technology",
-          price: "Rs. 28,500.00",
-          category: "Running"
-        },
-        {
-          id: 3,
-          image: getRandomImage(),
-          name: "Jordan 1 High",
-          description: "High-top basketball shoes with iconic style",
-          price: "Rs. 32,000.00",
-          category: "Basketball"
-        },
-        {
-          id: 4,
-          image: getRandomImage(),
-          name: "Air Force 1",
-          description: "Casual leather sneakers for everyday wear",
-          price: "Rs. 22,500.00",
-          category: "Casual"
-        }
-      ];
-      setProducts(mockProducts);
+  const fetchLatestProducts = async () => {
+    try {
+      const response = await fetch('/api/products/latest');
+      if (!response.ok) {
+        throw new Error('Failed to fetch latest products');
+      }
+      const latestProducts = await response.json();
+      setProducts(latestProducts);
       setIsLoading(false);
-    }, 1500);
+    } catch (error) {
+      console.error('Error fetching latest products:', error);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch latest products initially
+    fetchLatestProducts();
+
+    // Set up polling for real-time updates every 30 seconds
+    const intervalId = setInterval(fetchLatestProducts, 30000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -246,7 +229,7 @@ const ProductCards = () => {
         <div className="section-header">
           <h2 className="section-title">Top Picks For You</h2>
           <p className="section-subtitle">
-            Find your fit. From bold sneakers to sleek activewear, we've got everything to fuel your next move.
+            Find your perfect fit. From comfortable yoga pants to performance sportswear, we've got everything for your active lifestyle.
           </p>
         </div>
         

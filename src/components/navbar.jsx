@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './navbar.module.css';
-import ShopPage from '../pages/ShopPage';
 import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
@@ -10,96 +9,117 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { itemCount } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Handle navbar background change on scroll
     const handleScroll = () => {
-      window.scrollY > 50 ? setIsScrolled(true) : setIsScrolled(false);
+      setIsScrolled(window.scrollY > 50);
     };
 
-    // Check if user is authenticated
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
     }
 
-    // Check if user is admin
     const user = JSON.parse(localStorage.getItem('user'));
     if (user && user.role === 'admin') {
       setIsAdmin(true);
     }
 
     window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    setIsAdmin(false);
+    navigate('/');
+  };
+
   return (
     <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}>
-      <div className={styles.logo}>
-        <Link to="/">
-          <img src="/logo1.png" alt="Nike Logo" />
-        </Link>
-      </div>
-
-      <ul className={styles.navLinks}>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/shop">Shop</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/contact">Contact</Link></li>
-        {isAdmin && (
-          <li><Link to="/admin-dashboard" className={styles.adminLink}>Dashboard</Link></li>
-        )}
-      </ul>
-
-      <div className={styles.actions}>
-        <div className={styles.accountContainer}>
-          {!isAuthenticated ? (
-            <Link to="/signin" className={styles.signinLink}>
-              <i className="fas fa-user"></i>
-              Sign In
-            </Link>
-          ) : (
-            <Link to="/profile" className={styles.signinLink}>
-              <i className="fas fa-user"></i>
-              Profile
-            </Link>
-          )}
+      <div className={styles.navContainer}>
+        {/* Logo */}
+        <div className={styles.logo}>
+          <Link to="/">
+            <img src="/logo1.png" alt="Nike Logo" className={styles.logoImage} />
+          </Link>
         </div>
-        <div className={styles.searchContainer}>
-          <button 
-            aria-label="Search"
-            onClick={toggleSearch}
-            className={isSearchOpen ? styles.active : ''}
-          >
-            <i className="fas fa-search"></i>
-          </button>
-          <div className={`${styles.searchBar} ${isSearchOpen ? styles.open : ''}`}>
-            <input 
-              type="text" 
-              placeholder="Search products..."
-              aria-label="Search input"
-            />
-            <button className={styles.closeSearch} onClick={toggleSearch}>
-              <i className="fas fa-times"></i>
+
+        {/* Navigation Links */}
+        <ul className={styles.navLinks}>
+          <li><Link to="/" className={styles.navLink}>Home</Link></li>
+          <li><Link to="/shop" className={styles.navLink}>Shop</Link></li>
+          <li><Link to="/about" className={styles.navLink}>About</Link></li>
+          <li><Link to="/contact" className={styles.navLink}>Contact</Link></li>
+          {isAdmin && (
+            <li><Link to="/admin-dashboard" className={styles.adminLink}>Dashboard</Link></li>
+          )}
+        </ul>
+
+        {/* Search and Actions */}
+        <div className={styles.actions}>
+          {/* Search */}
+          <div className={styles.searchContainer}>
+            <button 
+              onClick={toggleSearch}
+              className={`${styles.searchToggle} ${isSearchOpen ? styles.active : ''}`}
+              aria-label="Search"
+            >
+              <i className="fas fa-search"></i>
             </button>
+            <div className={`${styles.searchBar} ${isSearchOpen ? styles.open : ''}`}>
+              <input 
+                type="text" 
+                placeholder="Search products..."
+                className={styles.searchInput}
+              />
+              <button onClick={toggleSearch} className={styles.closeSearch}>
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
           </div>
+
+          {/* User Account */}
+          <div className={styles.accountContainer}>
+            {!isAuthenticated ? (
+              <Link to="/signin" className={styles.signinLink}>
+                <i className="fas fa-user"></i>
+                Sign In
+              </Link>
+            ) : (
+              <>
+                <Link to="/profile" className={styles.signinLink}>
+                  <i className="fas fa-user"></i>
+                  Profile
+                </Link>
+                <button onClick={handleLogout} className={styles.signoutButton}>
+                  <i className="fas fa-sign-out-alt"></i>
+                  Sign Out
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Wishlist */}
+          <button className={styles.actionButton} aria-label="Wishlist">
+            <i className="fas fa-heart"></i>
+          </button>
+
+          {/* Shopping Cart */}
+          <Link to="/cart" className={styles.cartButton} aria-label="Shopping Cart">
+            <i className="fas fa-shopping-cart"></i>
+            {itemCount > 0 && (
+              <span className={styles.cartBadge}>{itemCount}</span>
+            )}
+          </Link>
         </div>
-        <button aria-label="Wishlist">
-          <i className="fas fa-heart"></i>
-        </button>
-        <Link to="/cart" className={styles.cartButton} aria-label="Shopping Cart">
-          <i className="fas fa-shopping-cart"></i>
-          {itemCount > 0 && (
-            <span className={styles.cartBadge}>{itemCount}</span>
-          )}
-        </Link>
       </div>
     </nav>
   );
