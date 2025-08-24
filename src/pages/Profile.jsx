@@ -154,6 +154,12 @@ const Profile = () => {
       reader.onload = async (e) => {
         const base64Image = e.target.result;
         
+        // Check if the image is too large (more than 1MB)
+        if (base64Image.length > 1000000) { // ~1MB in base64
+          showError('Image is too large. Please choose a smaller image (max 1MB).');
+          return;
+        }
+        
         const token = localStorage.getItem('token');
         const response = await fetch('http://localhost:5000/api/auth/profile/picture', {
           method: 'PUT',
@@ -167,13 +173,16 @@ const Profile = () => {
         if (response.ok) {
           const data = await response.json();
           setUser(data.user);
+          setProfilePicture(null); // Clear the selected file after successful upload
           success('Profile picture updated successfully!');
         } else {
-          showError('Failed to update profile picture');
+          const errorData = await response.json();
+          showError(errorData.message || 'Failed to update profile picture');
         }
       };
       reader.readAsDataURL(profilePicture);
     } catch (error) {
+      console.error('Image upload error:', error);
       showError('Network error. Please try again.');
     }
   };
