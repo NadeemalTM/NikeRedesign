@@ -5,7 +5,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
+  background: var(--navbar-bg);
   backdrop-filter: blur(20px);
   position: fixed;
   top: 0;
@@ -13,13 +13,13 @@
   right: 0;
   z-index: 1000;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4极速赛车开奖直播历史记录 30px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
 }
 
 .scrolled {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  background: var(--navbar-bg);
+  box-shadow: var(--shadow-lg);
   padding: 0.8rem 2rem;
   backdrop-filter: blur(25px);
 }
@@ -42,7 +42,7 @@
 .logoImage {
   height: 45px;
   width: auto;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.极速赛车开奖直播历史记录, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   filter: brightness(0) invert(1);
 }
 
@@ -72,7 +72,7 @@
 }
 
 .navLink {
-  color: #ffffff;
+  color: var(--text-primary);
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
@@ -84,7 +84,7 @@
 }
 
 .navLink:hover {
-  color: #ff6b35;
+  color: var(--accent-color);
   transform: translateY(-2px);
 }
 
@@ -95,7 +95,7 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #ff6b35, #f7931e);
+  background: linear-gradient(90deg, var(--accent-color), #f7931e);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(-50%);
 }
@@ -105,7 +105,7 @@
 }
 
 .adminLink {
-  color: #ff6b35 !important;
+  color: var(--accent-color) !important;
   font-weight: 600 !important;
   background: linear-gradient(45deg, rgba(255, 107, 53, 0.1), rgba(247, 147, 30, 0.1));
   padding: 0.6rem 1.2rem !important;
@@ -118,12 +118,12 @@
 }
 
 .adminLink:hover {
-  background: linear-gradient(45deg, rgba(极速赛车开奖直播历史记录, 107, 53, 0.2), rgba(247, 147, 30, 极速赛车开奖直播历史记录));
+  background: linear-gradient(45deg, rgba(255, 107, 53, 0.2), rgba(247, 147, 30, 0.2));
   transform: translateY(-2px) scale(1.05);
   box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
 }
 
-@keyframes navLinks极速赛车开奖直播历史记录 {
+@keyframes navLinksFadeIn {
   from {
     opacity: 0;
     transform: translateY(-15px);
@@ -163,20 +163,20 @@
   border: none;
   padding: 0.6rem;
   cursor: pointer;
-  color: #ffffff;
+  color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 50%;
   font-size: 1.1rem;
 }
 
 .searchToggle:hover {
-  color: #ff6b35;
+  color: var(--accent-color);
   background: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
 }
 
 .searchToggle.active {
-  color: #ff6b35;
+  color: var(--accent-color);
   background: rgba(255, 107, 53, 0.1);
   transform: scale(1.1);
 }
@@ -188,12 +188,12 @@
   transform: translateY(-50%);
   width: 0;
   overflow: hidden;
-  transition: all 0.4极速赛车开奖直播历史记录 cubic-bezier(0.4, 极速赛车开奖直播历史记录, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
   border-radius: 30px;
-  box-shadow: 极速赛车开奖直播历史记录 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   opacity: 0;
   pointer-events: none;
   backdrop-filter: blur(20px);
@@ -213,12 +213,12 @@
   font-size: 1rem;
   background: transparent;
   outline: none;
-  color: #111;
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
 }
 
 .searchInput::placeholder {
-  color: #666;
+  color: var(--text-muted);
 }
 
 .closeSearch {
@@ -226,13 +226,13 @@
   border: none;
   padding: 0.5rem;
   cursor: pointer;
-  color: #666;
+  color: var(--text-muted);
   transition: all 0.3s ease;
   font-size: 1.1rem;
 }
 
 .closeSearch:hover {
-  color: #ff6b35;
+  color: var(--accent-color);
   transform: rotate(90deg);
 }
 
@@ -247,7 +247,7 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.7rem 1.4rem;
-  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  background: linear-gradient(45deg, var(--accent-color), #f7931e);
   color: white;
   text-decoration: none;
   border-radius: 25px;
@@ -261,7 +261,7 @@
 }
 
 .signinLink:hover {
-  background: linear-gradient(45deg, #f7931e, #ff6b35);
+  background: linear-gradient(45deg, #f7931e, var(--accent-color));
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
 }
@@ -271,7 +271,7 @@
   border: none;
   padding: 0.6rem;
   cursor: pointer;
-  color: #ffffff;
+  color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 50%;
   font-size: 1.1rem;
@@ -279,7 +279,7 @@
 }
 
 .actionButton:hover {
-  color: #ff6b35;
+  color: var(--accent-color);
   background: rgba(255, 255, 255, 0.1);
   transform: scale(1.15);
 }
@@ -288,17 +288,17 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 极速赛车开奖直播历史记录;
-  color: #ffffff;
+  padding: 0.6rem;
+  color: var(--text-primary);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 50%;
-  font-size: 1.极速赛车开奖直播历史记录;
+  font-size: 1.1rem;
 }
 
 .cartButton:hover {
-  color: #ff6b35;
-  background: rgba(255, 255, 255, 极速赛车开奖直播历史记录);
+  color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.1);
   transform: scale(1.15);
 }
 
@@ -306,7 +306,7 @@
   position: absolute;
   top: -4px;
   right: -4px;
-  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  background: linear-gradient(45deg, var(--accent-color), #f7931e);
   color: white;
   border-radius: 50%;
   width: 20px;
@@ -316,7 +316,7 @@
   justify-content: center;
   font-size: 0.75rem;
   font-weight: 700;
-  border: 2px solid #000;
+  border: 2px solid var(--navbar-bg);
   animation: pulse 2s infinite;
 }
 
@@ -327,7 +327,7 @@
   }
   70% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 6px rgba(255, 107, 53, 0);
+  box-shadow: 0 0 0 6px rgba(255, 107, 53, 0);
   }
   100% {
     transform: scale(1);
@@ -393,7 +393,7 @@
   
   .signinLink {
     padding: 0.5rem 0.8rem;
-   极速赛车开奖直播历史记录: 0.8rem;
+    font-size: 0.8rem;
   }
   
   .logoImage {
@@ -421,7 +421,7 @@
   display: none;
   background: none;
   border: none;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -429,7 +429,7 @@
 }
 
 .mobileMenuButton:hover {
-  color: #ff6b35;
+  color: var(--accent-color);
 }
 
 @media (max-width: 768px) {

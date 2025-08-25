@@ -1,19 +1,19 @@
 .product-card {
-  background: white;
-  border: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: #d1d5db;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-color);
 }
 
 /* Product Image Container */
@@ -22,7 +22,7 @@
   margin-bottom: 16px;
   border-radius: 8px;
   overflow: hidden;
-  background: #f8fafc;
+  background: var(--bg-secondary);
 }
 
 .product-image {
@@ -84,13 +84,13 @@
   gap: 2px;
   font-weight: 700;
   font-size: 1.25rem;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .currency {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .price-amount {
@@ -102,7 +102,7 @@
   align-items: center;
   gap: 2px;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .strikethrough {
@@ -113,7 +113,7 @@
 .product-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.4;
   display: -webkit-box;
@@ -153,14 +153,14 @@
 
 .reviews-count {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 /* Product Description */
 .product-description {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin: 0;
   display: -webkit-box;
@@ -196,14 +196,14 @@
 
 /* Store Availability */
 .store-availability {
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border-color);
   padding-top: 12px;
   margin-top: 8px;
 }
 
 .availability-text {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0 0 8px 0;
   text-align: center;
 }

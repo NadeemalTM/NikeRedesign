@@ -16,31 +16,34 @@ import Buy from "./pages/Buy";
 import OrderSuccess from "./pages/OrderSuccess";
 import Profile from "./pages/Profile";
 import { CartProvider } from "./context/CartContext";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 import "./App.css";
 
 function App() {
   return (
-    <ToastProvider>
-      <CartProvider>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/buy" element={<Buy />} />
-        <Route path="/order-success" element={<OrderSuccess />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-      <Footer />
-      <Toast /> {/* Add Toast component here */}
-    </CartProvider>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <CartProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/buy" element={<Buy />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+          <Footer />
+          <Toast /> {/* Add Toast component here */}
+        </CartProvider>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 
