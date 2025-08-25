@@ -26,8 +26,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     checkAdminAuth();
     fetchProducts();
-    // fetchUsers(); // This endpoint doesn't exist yet
-    // fetchContacts(); // This endpoint doesn't exist yet
+    fetchUsers();
+    fetchContacts();
   }, []);
 
   const checkAdminAuth = () => {
@@ -227,10 +227,32 @@ const AdminDashboard = () => {
             <div className="users-grid">
               {users.map(user => (
                 <div key={user._id} className="user-card">
-                  <h3>{user.username}</h3>
-                  <p>Email: {user.email}</p>
-                  <p>Role: {user.role}</p>
-                  <p>Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
+                  <div className="user-header">
+                    {user.profilePicture ? (
+                      <img 
+                        src={`http://localhost:5000${user.profilePicture}`} 
+                        alt={user.username}
+                        className="user-profile-pic"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/placeholder.jpg';
+                        }}
+                      />
+                    ) : (
+                      <div className="user-avatar">{user.username.charAt(0).toUpperCase()}</div>
+                    )}
+                    <h3>{user.username}</h3>
+                  </div>
+                  <p><strong>Email:</strong> {user.email}</p>
+                  <p><strong>Role:</strong> <span className={`role-badge ${user.role}`}>{user.role}</span></p>
+                  <p><strong>Name:</strong> {user.firstName || 'Not set'} {user.lastName || ''}</p>
+                  {user.phone && <p><strong>Phone:</strong> {user.phone}</p>}
+                  {user.gender && <p><strong>Gender:</strong> {user.gender}</p>}
+                  {user.dateOfBirth && <p><strong>DOB:</strong> {new Date(user.dateOfBirth).toLocaleDateString()}</p>}
+                  {user.profilePicture && <p><strong>Profile Pic:</strong> {user.profilePicture}</p>}
+                  <p><strong>Password:</strong> <span className="password-info">Hashed for security (cannot be displayed)</span></p>
+                  <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
+                  <p><strong>Last Updated:</strong> {new Date(user.updatedAt).toLocaleDateString()}</p>
                 </div>
               ))}
             </div>

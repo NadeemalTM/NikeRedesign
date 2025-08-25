@@ -262,3 +262,72 @@
   background: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
+.user-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 15px;
+}
+
+.user-profile-pic {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #007bff;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  border: 2px solid #007bff;
+}
+
+.user-card h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.user-card p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.user-card strong {
+  color: #333;
+}
+
+.role-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.role-badge.admin {
+  background: #dc3545;
+  color: white;
+}
+
+.role-badge.user {
+  background: #28a745;
+  color: white;
+}
+
+.password-info {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 12px;
+}
