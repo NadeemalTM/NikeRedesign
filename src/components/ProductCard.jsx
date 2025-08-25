@@ -3,28 +3,11 @@ import './ProductCard.css';
 
 const ProductCard = ({
   product,
-  onAddToWishlist,
   onAddToCart,
   onProductClick
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
-
-  // Handle wishlist button click
-  const handleWishlistClick = (e) => {
-    e.stopPropagation();
-    if (onAddToWishlist) {
-      onAddToWishlist(product);
-    }
-  };
-
-  // Handle cart button click
-  const handleCartClick = (e) => {
-    e.stopPropagation();
-    if (onAddToCart) {
-      onAddToCart(product);
-    }
-  };
 
   // Handle product card click
   const handleCardClick = () => {
@@ -33,55 +16,31 @@ const ProductCard = ({
     }
   };
 
-  // Render star ratings (0-5 scale)
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 1; i <= 5; i++) {
-      if (i <= fullStars) {
-        stars.push(<span key={i} className="star filled">★</span>);
-      } else if (i === fullStars + 1 && hasHalfStar) {
-        stars.push(<span key={i} className="star half">★</span>);
-      } else {
-        stars.push(<span key={i} className="star">★</span>);
-      }
+  // Handle buy now button click
+  const handleBuyNow = (e) => {
+    e.stopPropagation();
+    if (onAddToCart) {
+      onAddToCart(product);
     }
-
-    return stars;
-  };
-
-  // Format number with K/M suffixes
-  const formatNumber = (num) => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + 'M';
-    } else if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'K';
-    }
-    return num.toString();
   };
 
   // Construct proper image URL
-  const getImageUrl = () => {
-    if (!product.image) return '/placeholder.jpg';
+  const getImageUrl = (image) => {
+    if (!image) return '/placeholder.jpg';
     
-    // If image is already a full URL, use it directly
-    if (product.image.startsWith('http')) {
-      return product.image;
+    if (image.startsWith('http')) {
+      return image;
     }
     
-    // If image starts with /uploads, construct full backend URL
-    if (product.image.startsWith('/uploads/')) {
-      return `http://localhost:5000${product.image}`;
+    if (image.startsWith('/uploads/')) {
+      return `http://localhost:5000${image}`;
     }
     
-    // If it's just a filename, assume it's in uploads
-    if (!product.image.startsWith('/')) {
-      return `http://localhost:5000/uploads/${product.image}`;
+    if (!image.startsWith('/')) {
+      return `http://localhost:5000/uploads/${image}`;
     }
     
-    return product.image;
+    return image;
   };
 
   const handleImageError = (e) => {
@@ -97,54 +56,43 @@ const ProductCard = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
     >
-      {/* Product Image with Hover Actions */}
+      {/* Product Images */}
       <div className="product-image-container">
-        <img 
-          src={imageError ? '/placeholder.jpg' : getImageUrl()} 
-          alt={product.name} 
-          className="product-image"
-          onError={handleImageError}
-          loading="lazy"
-        />
+        {product.images && product.images.length > 0 ? (
+          <img 
+            src={imageError ? '/placeholder.jpg' : getImageUrl(product.images[0])} 
+            alt={product.name} 
+            className="product-image"
+            onError={handleImageError}
+            loading="lazy"
+          />
+        ) : (
+          <img 
+            src="/placeholder.jpg" 
+            alt={product.name} 
+            className="product-image"
+            onError={handleImageError}
+            loading="lazy"
+          />
+        )}
         
-        {/* Hover Action Buttons */}
-        <div className={`hover-actions ${isHovered ? 'visible' : ''}`}>
-          <button 
-            className="action-btn wishlist-btn"
-            onClick={handleWishlistClick}
-            aria-label="Add to wishlist"
-          >
-            ♡
-          </button>
-          <button 
-            className="action-btn cart-btn"
-            onClick={handleCartClick}
-            aria-label="Add to cart"
-          >
-            +
-          </button>
-        </div>
-
         {/* Discount Badge */}
         {product.discountPercentage > 0 && (
           <div className="discount-badge">
             -{product.discountPercentage}%
           </div>
         )}
+
+        {/* New Product Badge */}
+        {product.isNew && (
+          <div className="new-badge">
+            NEW
+          </div>
+        )}
       </div>
 
       {/* Product Information */}
       <div className="product-info">
-        {/* Category/Tags */}
-        {product.category && (
-          <div className="product-category">
-            {product.category}
-          </div>
-        )}
-
-        {/* Product Name */}
-        <h3 className="product-name">{product.name}</h3>
-
         {/* Price Section */}
         <div className="price-section">
           <div className="current-price">
@@ -161,46 +109,53 @@ const ProductCard = ({
           )}
         </div>
 
-        {/* Ratings and Reviews */}
+        {/* Product Name */}
+        <h3 className="product-name">{product.name}</h3>
+
+        {/* Rating & Reviews */}
         <div className="ratings-section">
           <div className="stars">
-            {renderStars(product.rating || 0)}
+            {/* Render star ratings */}
+            {Array.from({ length: 5 }, (_, index) => (
+              <span key={index} className={`star ${index < product.rating ? 'filled' : ''}`}>★</span>
+            ))}
           </div>
           <span className="reviews-count">
-            ({product.reviewCount ? formatNumber(product.reviewCount) : '0'} reviews)
+            {product.reviewCount > 0 ? `(${product.reviewCount})` : 'No reviews'}
           </span>
         </div>
 
-        {/* Sales/Orders Count */}
-        {product.ordersCount > 0 && (
-          <div className="orders-count">
-            {formatNumber(product.ordersCount)}+ orders
-          </div>
+        {/* Short Description */}
+        {product.description && (
+          <p className="product-description">
+            {product.description}
+          </p>
         )}
 
-        {/* Shipping Information */}
-        <div className="shipping-info">
-          {product.freeShipping ? (
-            <span className="free-shipping">Free Shipping</span>
-          ) : (
-            <span className="shipping-cost">
-              Shipping: Rs. {product.shippingCost?.toLocaleString() || '0'}
-            </span>
-          )}
-          {product.estimatedDelivery && (
-            <span className="delivery-time">
-              Est. delivery {product.estimatedDelivery}
-            </span>
-          )}
+        {/* Buy Now Button */}
+        <button 
+          className="buy-now-btn"
+          onClick={handleBuyNow}
+        >
+          Buy now
+        </button>
+
+        {/* Store Availability */}
+        <div className="store-availability">
+          <p className="availability-text">Choose a store to see local availability</p>
+          <div className="store-icons">
+            <span className="store-icon" title="Main Store">🏪</span>
+            <span className="store-icon" title="Mall Branch">🛍️</span>
+            <span className="store-icon" title="Online Store">🌐</span>
+          </div>
         </div>
 
-        {/* Country/Region of Origin */}
-        {product.originCountry && (
-          <div className="origin-info">
-            <span className="origin-flag">🇵🇰</span>
-            <span className="origin-text">from {product.originCountry}</span>
-          </div>
-        )}
+        {/* Additional Icons */}
+        <div className="feature-icons">
+          {product.isVegan && <span className="feature-icon" title="Vegan">🌱</span>}
+          {product.isGlutenFree && <span className="feature-icon" title="Gluten Free">🌾</span>}
+          {product.freeShipping && <span className="feature-icon" title="Free Shipping">🚚</span>}
+        </div>
       </div>
     </div>
   );
@@ -212,19 +167,17 @@ ProductCard.defaultProps = {
     id: 0,
     name: 'Product Name',
     price: 0,
-    image: '',
-    category: '',
+    images: [],
+    description: '',
     rating: 0,
     reviewCount: 0,
-    ordersCount: 0,
-    freeShipping: false,
-    shippingCost: 0,
-    estimatedDelivery: '',
-    originCountry: '',
     discountPercentage: 0,
-    originalPrice: null
+    originalPrice: null,
+    isNew: false,
+    isVegan: false,
+    isGlutenFree: false,
+    freeShipping: false
   },
-  onAddToWishlist: () => {},
   onAddToCart: () => {},
   onProductClick: () => {}
 };

@@ -119,29 +119,37 @@ const ProductPage = () => {
       </div>
 
       <div className="product-details-container">
-        <div className="image-gallery">
-          <div className="thumbnails">
-            {[0, 1, 2, 3].map((index) => (
-              <div 
-                key={index}
-                className={`thumbnail ${index === 0 ? 'active' : ''}`}
-              >
+          <div className="image-gallery">
+            <div className="thumbnails">
+              {product.images && product.images.map((image, index) => (
+                <div 
+                  key={index}
+                  className={`thumbnail ${index === 0 ? 'active' : ''}`}
+                >
+                  <img 
+                    src={imageError ? '/placeholder.jpg' : getImageUrl(image)} 
+                    alt={`${product.name} view ${index + 1}`} 
+                    className="w-full h-full object-cover"
+                    onError={handleImageError}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="main-image">
+              {product.images && product.images.length > 0 ? (
                 <img 
-                  src={imageError ? '/placeholder.jpg' : getImageUrl(product.image)} 
-                  alt={`${product.name} view ${index + 1}`} 
-                  className="w-full h-full object-cover"
+                  src={imageError ? '/placeholder.jpg' : getImageUrl(product.images[0])} 
+                  alt={product.name}
                   onError={handleImageError}
                 />
-              </div>
-            ))}
-          </div>
-          <div className="main-image">
-            <img 
-              src={imageError ? '/placeholder.jpg' : getImageUrl(product.image)} 
-              alt={product.name}
-              onError={handleImageError}
-            />
-          </div>
+              ) : (
+                <img 
+                  src="/placeholder.jpg" 
+                  alt={product.name}
+                  onError={handleImageError}
+                />
+              )}
+            </div>
         </div>
         <div className="product-info">
           <h1 className="product-title">{product.name}</h1>
@@ -219,12 +227,21 @@ const ProductPage = () => {
               <p>Embodying the raw, wayward spirit of rock 'n' roll, the Kilburn portable active stereo speaker takes the unmistakable look and sound of Marshall, unplugs the chords, and takes the show on the road.</p>
               <p>Weighing in under 7 pounds, the Kilburn is a lightweight piece of vintage styled engineering. Setting the bar as one of the loudest speakers in its class, the Kilburn is a compact, stout-hearted hero with a well-balanced audio which boosts a clear midrange and extended highs for a sound that is both articulate and pronounced. The analogue knobs allow you to fine tune the controls to your personal preferences while the guitar-influenced leather strap enables easy and stylish travel.</p>
               <div className="product-images-grid">
-                <img 
-                  src={imageError ? '/placeholder.jpg' : getImageUrl(product.image)} 
-                  alt={product.name} 
-                  className="product-detail-image"
-                  onError={handleImageError}
-                />
+                {product.images && product.images.length > 0 ? (
+                  <img 
+                    src={imageError ? '/placeholder.jpg' : getImageUrl(product.images[0])} 
+                    alt={product.name} 
+                    className="product-detail-image"
+                    onError={handleImageError}
+                  />
+                ) : (
+                  <img 
+                    src="/placeholder.jpg" 
+                    alt={product.name} 
+                    className="product-detail-image"
+                    onError={handleImageError}
+                  />
+                )}
               </div>
             </div>
           )}
@@ -235,3 +252,4 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+

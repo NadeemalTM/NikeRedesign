@@ -94,16 +94,10 @@ const Navbar = () => {
                 Sign In
               </Link>
             ) : (
-              <>
-                <Link to="/profile" className={styles.signinLink}>
-                  <i className="fas fa-user"></i>
-                  Profile
-                </Link>
-                <button onClick={handleLogout} className={styles.signoutButton}>
-                  <i className="fas fa-sign-out-alt"></i>
-                  Sign Out
-                </button>
-              </>
+              <Link to="/profile" className={styles.signinLink}>
+                <i className="fas fa-user"></i>
+                Profile
+              </Link>
             )}
           </div>
 

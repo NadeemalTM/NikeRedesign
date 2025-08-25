@@ -15,7 +15,6 @@ const AdminDashboard = () => {
     price: '',
     category: '',
     stock: '',
-    image: '',
     brand: 'Nike'
   });
   const [imageFile, setImageFile] = useState(null);
@@ -107,7 +106,8 @@ const AdminDashboard = () => {
   };
 
   const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+    const files = Array.from(e.target.files);
+    setImageFile(files);
   };
 
   const handleSubmit = async (e) => {
@@ -119,8 +119,11 @@ const AdminDashboard = () => {
     Object.keys(formData).forEach(key => {
       formDataToSend.append(key, formData[key]);
     });
-    if (imageFile) {
-      formDataToSend.append('image', imageFile);
+    // Append all image files
+    if (imageFile && imageFile.length > 0) {
+      imageFile.forEach((file, index) => {
+        formDataToSend.append('images', file);
+      });
     }
 
     try {
@@ -143,7 +146,6 @@ const AdminDashboard = () => {
           price: '',
           category: '',
           stock: '',
-          image: '',
           brand: 'Nike'
         });
         setImageFile(null);
@@ -192,15 +194,23 @@ const AdminDashboard = () => {
           <div className="products-grid">
             {products.map(product => (
               <div key={product._id} className="product-card">
-                <img 
-                  src={product.image ? `http://localhost:5000${product.image}` : '/placeholder.jpg'} 
-                  alt={product.name} 
-                  className="product-image"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/placeholder.jpg';
-                  }}
-                />
+                {product.images && product.images.length > 0 ? (
+                  <img 
+                    src={`http://localhost:5000${product.images[0]}`} 
+                    alt={product.name} 
+                    className="product-image"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/placeholder.jpg';
+                    }}
+                  />
+                ) : (
+                  <img 
+                    src="/placeholder.jpg" 
+                    alt={product.name} 
+                    className="product-image"
+                  />
+                )}
                 <div className="product-info">
                   <h3>{product.name}</h3>
                   <p>{product.description}</p>
@@ -393,6 +403,7 @@ const AdminDashboard = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
+                  multiple
                 />
               </div>
               
