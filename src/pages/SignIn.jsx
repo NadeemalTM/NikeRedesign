@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
+import apiClient, { ApiError } from '../utils/api';
 import './SignIn.css';
 
 const SignIn = () => {
-  const { success } = useToast();
+  const { success, error: showError } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -56,34 +59,43 @@ const SignIn = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
+      const data = await apiClient.post('/auth/login', formData);
       
-      if (response.ok) {
-        // Store token and user info
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Show success message
-        success('Successfully signed in! Welcome back!');
-        
-        // Redirect based on role
-        if (data.user.role === 'admin') {
-          window.location.href = '/admin-dashboard';
-        } else {
-          window.location.href = '/';
-        }
+      // Store token and user info
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // Show success message
+      success('Successfully signed in! Welcome back!');
+      
+      // Redirect based on role
+      if (data.user.role === 'admin') {
+        window.location.href = '/admin-dashboard';
       } else {
-        setErrors({ general: data.message || 'Login failed' });
+        window.location.href = '/';
       }
     } catch (error) {
+      console.error('Login error:', error);
+      
+      if (error instanceof ApiError) {
+        // Handle specific API errors
+        switch (error.code) {
+          case 'INVALID_CREDENTIALS':
+            setErrors({ general: 'Invalid email or password. Please try again.' });
+            break;
+          case 'RATE_LIMITED':
+          case 'AUTH_RATE_LIMITED':
+            setErrors({ general: 'Too many login attempts. Please try again later.' });
+            break;
+          case 'VALIDATION_ERROR':
+            setErrors({ general: error.message });
+            break;
+          default:
+            setErrors({ general: error.message || 'Login failed. Please try again.' });
+        }
+      } else {
+        setErrors({ general: 'Network error. Please check your connection and try again.' });
+      }
       setErrors({ general: 'Network error. Please try again.' });
     } finally {
       setIsLoading(false);
