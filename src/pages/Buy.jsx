@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
-import { loadStripe } from '@stripe/stripe-js';
 import './Buy.css';
 
 const Buy = () => {
@@ -30,10 +29,16 @@ const Buy = () => {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
 
   useEffect(() => {
-    // Initialize Stripe
+    // Initialize Stripe with dynamic import
     const initializeStripe = async () => {
-      const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51S0fMSDlNV2fyBsktFbbsvOmXM1SVvgzbyVzuTAvbxzh4xuGcsazoIdzFh986CMcPZFwa8ebdRQFasyQvDTjetMT001THlovB3');
-      setStripe(stripeInstance);
+      try {
+        const { loadStripe } = await import('@stripe/stripe-js');
+        const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51S0fMSDlNV2fyBsktFbbsvOmXM1SVvgzbyVzuTAvbxzh4xuGcsazoIdzFh986CMcPZFwa8ebdRQFasyQvDTjetMT001THlovB3');
+        setStripe(stripeInstance);
+      } catch (error) {
+        console.error('Failed to load Stripe:', error);
+        showToast('Payment system temporarily unavailable', 'error');
+      }
     };
     initializeStripe();
   }, []);
