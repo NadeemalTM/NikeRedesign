@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { loadStripe } from '@stripe/stripe-js';
 import './Buy.css';
 
 const Buy = () => {
@@ -24,6 +25,18 @@ const Buy = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [stripe, setStripe] = useState(null);
+  const [elements, setElements] = useState(null);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+
+  useEffect(() => {
+    // Initialize Stripe
+    const initializeStripe = async () => {
+      const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51S0fMSDlNV2fyBsktFbbsvOmXM1SVvgzbyVzuTAvbxzh4xuGcsazoIdzFh986CMcPZFwa8ebdRQFasyQvDTjetMT001THlovB3');
+      setStripe(stripeInstance);
+    };
+    initializeStripe();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,10 +55,9 @@ const Buy = () => {
     return { subtotal, shippingCost, tax, totalAmount };
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
+  const handleStripePayment = async () => {
+    setPaymentProcessing(true);
+    
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -54,51 +66,136 @@ const Buy = () => {
         return;
       }
 
-      const { subtotal, shippingCost, tax, totalAmount } = calculateTotals();
+      const { totalAmount } = calculateTotals();
 
-      const orderData = {
-        shippingAddress: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
-          state: formData.state,
-          zipCode: formData.zipCode,
-          country: formData.country
-        },
-        paymentMethod: formData.paymentMethod,
-        notes: formData.notes,
-        subtotal,
-        shippingCost,
-        tax,
-        total: totalAmount
-      };
-
-      const response = await fetch('http://localhost:5000/api/orders', {
+      // Create payment intent
+      const response = await fetch('http://localhost:5000/api/stripe/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify({
+          shippingAddress: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode,
+            country: formData.country
+          },
+          paymentMethod: formData.paymentMethod,
+          notes: formData.notes
+        })
       });
 
-      if (response.ok) {
-        const order = await response.json();
-        showToast('Order placed successfully!', 'success');
-        clearCart();
-        navigate('/order-success', { state: { order } });
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
-        showToast(errorData.message || 'Failed to place order', 'error');
+        throw new Error(errorData.message || 'Failed to create payment intent');
       }
+
+      const { clientSecret, paymentIntentId } = await response.json();
+
+      // Confirm payment with Stripe
+      const { error: stripeError } = await stripe.confirmPayment({
+        elements,
+        clientSecret,
+        confirmParams: {
+          return_url: `http://localhost:5173/payment-success?payment_intent=${paymentIntentId}`,
+          payment_method_data: {
+            billing_details: {
+              name: `${formData.firstName} ${formData.lastName}`,
+              email: formData.email,
+              phone: formData.phone,
+              address: {
+                line1: formData.address,
+                city: formData.city,
+                state: formData.state,
+                postal_code: formData.zipCode,
+                country: formData.country
+              }
+            }
+          }
+        }
+      });
+
+      if (stripeError) {
+        throw new Error(stripeError.message);
+      }
+
     } catch (error) {
-      console.error('Order placement error:', error);
-      showToast('Network error. Please try again.', 'error');
-    } finally {
-      setLoading(false);
+      console.error('Stripe payment error:', error);
+      showToast(error.message || 'Payment failed. Please try again.', 'error');
+      setPaymentProcessing(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (formData.paymentMethod === 'cash_on_delivery') {
+      // Handle cash on delivery
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          showToast('Please login to complete your purchase', 'error');
+          navigate('/signin');
+          return;
+        }
+
+        const { subtotal, shippingCost, tax, totalAmount } = calculateTotals();
+
+        const orderData = {
+          shippingAddress: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode,
+            country: formData.country
+          },
+          paymentMethod: formData.paymentMethod,
+          notes: formData.notes,
+          subtotal,
+          shippingCost,
+          tax,
+          total: totalAmount
+        };
+
+        const response = await fetch('http://localhost:5000/api/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(orderData)
+        });
+
+        if (response.ok) {
+          const order = await response.json();
+          showToast('Order placed successfully!', 'success');
+          clearCart();
+          navigate('/order-success', { state: { order } });
+        } else {
+          const errorData = await response.json();
+          showToast(errorData.message || 'Failed to place order', 'error');
+        }
+      } catch (error) {
+        console.error('Order placement error:', error);
+        showToast('Network error. Please try again.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Handle Stripe payment
+      handleStripePayment();
     }
   };
 

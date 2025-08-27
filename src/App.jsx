@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Cart from "./pages/Cart";
 import Buy from "./pages/Buy";
 import OrderSuccess from "./pages/OrderSuccess";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import Profile from "./pages/Profile";
 import { CartProvider } from "./context/CartContext";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
@@ -39,6 +40,7 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/buy" element={<Buy />} />
               <Route path="/order-success" element={<OrderSuccess />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/profile" element={<Profile />} />
             </Routes>
             <Footer />
