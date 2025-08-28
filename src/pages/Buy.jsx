@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
@@ -19,35 +19,42 @@ const Buy = () => {
     state: '',
     zipCode: '',
     country: 'Pakistan',
-    paymentMethod: 'cash_on_delivery',
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
     notes: ''
   });
 
   const [loading, setLoading] = useState(false);
-  const [stripe, setStripe] = useState(null);
-  const [elements, setElements] = useState(null);
-  const [paymentProcessing, setPaymentProcessing] = useState(false);
-
-  useEffect(() => {
-    // Initialize Stripe with dynamic import
-    const initializeStripe = async () => {
-      try {
-        const { loadStripe } = await import('@stripe/stripe-js');
-        const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51S0fMSDlNV2fyBsktFbbsvOmXM1SVvgzbyVzuTAvbxzh4xuGcsazoIdzFh986CMcPZFwa8ebdRQFasyQvDTjetMT001THlovB3');
-        setStripe(stripeInstance);
-      } catch (error) {
-        console.error('Failed to load Stripe:', error);
-        showToast('Payment system temporarily unavailable', 'error');
-      }
-    };
-    initializeStripe();
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    let formattedValue = value;
+    
+    // Auto-format card number (add spaces every 4 digits)
+    if (name === 'cardNumber') {
+      const cleanedValue = value.replace(/\s+/g, '');
+      if (/^\d*$/.test(cleanedValue)) {
+        formattedValue = cleanedValue.replace(/(\d{4})/g, '$1 ').trim();
+      }
+    }
+    
+    // Auto-format expiry date (add slash after 2 digits)
+    if (name === 'expiryDate') {
+      const cleanedValue = value.replace(/\D/g, '');
+      if (/^\d*$/.test(cleanedValue)) {
+        if (cleanedValue.length <= 2) {
+          formattedValue = cleanedValue;
+        } else {
+          formattedValue = cleanedValue.slice(0, 2) + '/' + cleanedValue.slice(2, 4);
+        }
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: formattedValue
     }));
   };
 
@@ -60,9 +67,79 @@ const Buy = () => {
     return { subtotal, shippingCost, tax, totalAmount };
   };
 
-  const handleStripePayment = async () => {
-    setPaymentProcessing(true);
+
+  const validateCardDetails = () => {
+    const { cardNumber, expiryDate, cvv } = formData;
     
+    // Basic validation
+    if (!cardNumber || !expiryDate || !cvv) {
+      showToast('Please fill in all card details', 'error');
+      return false;
+    }
+    
+    // Validate card number (16 digits, Luhn algorithm)
+    const cleanedCardNumber = cardNumber.replace(/\s+/g, '');
+    if (cleanedCardNumber.length !== 16 || !/^\d+$/.test(cleanedCardNumber)) {
+      showToast('Card number must be 16 digits', 'error');
+      return false;
+    }
+    
+    // Luhn algorithm validation
+    let sum = 0;
+    let isEven = false;
+    for (let i = cleanedCardNumber.length - 1; i >= 0; i--) {
+      let digit = parseInt(cleanedCardNumber.charAt(i), 10);
+      if (isEven) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+      sum += digit;
+      isEven = !isEven;
+    }
+    
+    if (sum % 10 !== 0) {
+      showToast('Invalid card number', 'error');
+      return false;
+    }
+    
+    // Validate expiry date (MM/YY format)
+    const expiryRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    if (!expiryRegex.test(expiryDate)) {
+      showToast('Expiry date must be in MM/YY format', 'error');
+      return false;
+    }
+    
+    const [month, year] = expiryDate.split('/');
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear() % 100;
+    const currentMonth = currentDate.getMonth() + 1;
+    
+    if (parseInt(year) < currentYear || 
+        (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+      showToast('Card has expired', 'error');
+      return false;
+    }
+    
+    // Validate CVV (3-4 digits)
+    if (!/^\d{3,4}$/.test(cvv)) {
+      showToast('CVV must be 3 or 4 digits', 'error');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate card details
+    if (!validateCardDetails()) {
+      return;
+    }
+
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -71,136 +148,56 @@ const Buy = () => {
         return;
       }
 
-      const { totalAmount } = calculateTotals();
+      const { subtotal, shippingCost, tax, totalAmount } = calculateTotals();
 
-      // Create payment intent
-      const response = await fetch('http://localhost:5000/api/stripe/create-payment-intent', {
+      const orderData = {
+        shippingAddress: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+          country: formData.country
+        },
+        paymentMethod: 'credit_card',
+        cardDetails: {
+          cardNumber: formData.cardNumber,
+          expiryDate: formData.expiryDate,
+          cvv: formData.cvv
+        },
+        notes: formData.notes,
+        subtotal,
+        shippingCost,
+        tax,
+        total: totalAmount
+      };
+
+      const response = await fetch('http://localhost:5000/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          shippingAddress: {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            phone: formData.phone,
-            address: formData.address,
-            city: formData.city,
-            state: formData.state,
-            zipCode: formData.zipCode,
-            country: formData.country
-          },
-          paymentMethod: formData.paymentMethod,
-          notes: formData.notes
-        })
+        body: JSON.stringify(orderData)
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const order = await response.json();
+        showToast('Order placed successfully!', 'success');
+        clearCart();
+        navigate('/order-success', { state: { order } });
+      } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create payment intent');
+        showToast(errorData.message || 'Failed to place order', 'error');
       }
-
-      const { clientSecret, paymentIntentId } = await response.json();
-
-      // Confirm payment with Stripe
-      const { error: stripeError } = await stripe.confirmPayment({
-        elements,
-        clientSecret,
-        confirmParams: {
-          return_url: `http://localhost:5173/payment-success?payment_intent=${paymentIntentId}`,
-          payment_method_data: {
-            billing_details: {
-              name: `${formData.firstName} ${formData.lastName}`,
-              email: formData.email,
-              phone: formData.phone,
-              address: {
-                line1: formData.address,
-                city: formData.city,
-                state: formData.state,
-                postal_code: formData.zipCode,
-                country: formData.country
-              }
-            }
-          }
-        }
-      });
-
-      if (stripeError) {
-        throw new Error(stripeError.message);
-      }
-
     } catch (error) {
-      console.error('Stripe payment error:', error);
-      showToast(error.message || 'Payment failed. Please try again.', 'error');
-      setPaymentProcessing(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (formData.paymentMethod === 'cash_on_delivery') {
-      // Handle cash on delivery
-      setLoading(true);
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          showToast('Please login to complete your purchase', 'error');
-          navigate('/signin');
-          return;
-        }
-
-        const { subtotal, shippingCost, tax, totalAmount } = calculateTotals();
-
-        const orderData = {
-          shippingAddress: {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            phone: formData.phone,
-            address: formData.address,
-            city: formData.city,
-            state: formData.state,
-            zipCode: formData.zipCode,
-            country: formData.country
-          },
-          paymentMethod: formData.paymentMethod,
-          notes: formData.notes,
-          subtotal,
-          shippingCost,
-          tax,
-          total: totalAmount
-        };
-
-        const response = await fetch('http://localhost:5000/api/orders', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(orderData)
-        });
-
-        if (response.ok) {
-          const order = await response.json();
-          showToast('Order placed successfully!', 'success');
-          clearCart();
-          navigate('/order-success', { state: { order } });
-        } else {
-          const errorData = await response.json();
-          showToast(errorData.message || 'Failed to place order', 'error');
-        }
-      } catch (error) {
-        console.error('Order placement error:', error);
-        showToast('Network error. Please try again.', 'error');
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      // Handle Stripe payment
-      handleStripePayment();
+      console.error('Order placement error:', error);
+      showToast('Network error. Please try again.', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -344,7 +341,7 @@ const Buy = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="Pakistan">Pakistan</option>
+                  <option value="Sri Lanka">Sri Lanka</option>
                   <option value="USA">United States</option>
                   <option value="UK">United Kingdom</option>
                   <option value="Canada">Canada</option>
@@ -356,39 +353,63 @@ const Buy = () => {
 
           <div className="form-section">
             <h3>Payment Method</h3>
-            <div className="payment-methods">
-              <label className="payment-option">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="cash_on_delivery"
-                  checked={formData.paymentMethod === 'cash_on_delivery'}
-                  onChange={handleInputChange}
-                />
-                <span>Cash on Delivery</span>
-              </label>
+            <div className="payment-details">
+              <h4>Credit/Debit Card</h4>
               
-              <label className="payment-option">
+              <div className="card-icons">
+                <span className="card-icon">Visa</span>
+                <span className="card-icon">MC</span>
+                <span className="card-icon">Amex</span>
+                <span className="card-icon">Discover</span>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="cardNumber">Card Number *</label>
                 <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="credit_card"
-                  checked={formData.paymentMethod === 'credit_card'}
+                  type="text"
+                  id="cardNumber"
+                  name="cardNumber"
+                  value={formData.cardNumber}
                   onChange={handleInputChange}
+                  placeholder="1234 5678 9012 3456"
+                  maxLength="19"
+                  required
                 />
-                <span>Credit Card</span>
-              </label>
-              
-              <label className="payment-option">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="debit_card"
-                  checked={formData.paymentMethod === 'debit_card'}
-                  onChange={handleInputChange}
-                />
-                <span>Debit Card</span>
-              </label>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="expiryDate">Expiry Date *</label>
+                  <input
+                    type="text"
+                    id="expiryDate"
+                    name="expiryDate"
+                    value={formData.expiryDate}
+                    onChange={handleInputChange}
+                    placeholder="MM/YY"
+                    maxLength="5"
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="cvv">CVV *</label>
+                  <input
+                    type="text"
+                    id="cvv"
+                    name="cvv"
+                    value={formData.cvv}
+                    onChange={handleInputChange}
+                    placeholder="123"
+                    maxLength="4"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="security-note">
+                Your payment information is encrypted and secure. We do not store your card details.
+              </div>
             </div>
           </div>
 
@@ -403,34 +424,35 @@ const Buy = () => {
             />
           </div>
 
-          <div className="order-summary">
-            <h3>Order Summary</h3>
-            <div className="summary-item">
-              <span>Subtotal:</span>
-              <span>Rs. {subtotal.toLocaleString()}</span>
-            </div>
-            <div className="summary-item">
-              <span>Shipping:</span>
-              <span>{shippingCost === 0 ? 'Free' : `Rs. ${shippingCost.toLocaleString()}`}</span>
-            </div>
-            <div className="summary-item">
-              <span>Tax (13%):</span>
-              <span>Rs. {tax.toLocaleString()}</span>
-            </div>
-            <div className="summary-item total">
-              <span>Total:</span>
-              <span>Rs. {totalAmount.toLocaleString()}</span>
-            </div>
-          </div>
-
           <button 
             type="submit" 
-            className="place-order-btn"
+            className="buy-now-btn"
             disabled={loading}
           >
-            {loading ? 'Processing...' : 'Place Order'}
+            {loading ? 'Processing...' : 'Buy Now'}
           </button>
         </form>
+        
+        <div className="order-summary">
+          <h3>Order Summary</h3>
+          <div className="summary-item">
+            <span>Subtotal:</span>
+            <span>Rs. {subtotal.toLocaleString()}</span>
+          </div>
+          <div className="summary-item">
+            <span>Shipping:</span>
+            <span>{shippingCost === 0 ? 'Free' : `Rs. ${shippingCost.toLocaleString()}`}</span>
+          </div>
+          <div className="summary-item">
+            <span>Tax (13%):</span>
+            <span>Rs. {tax.toLocaleString()}</span>
+          </div>
+          <div className="summary-item total">
+            <span>Total:</span>
+            <span>Rs. {totalAmount.toLocaleString()}</span>
+          </div>
+        </div>
+        
       </div>
     </div>
   );

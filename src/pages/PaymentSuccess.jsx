@@ -33,7 +33,7 @@ const PaymentSuccess = () => {
       }
 
       // Verify payment with backend
-      const response = await fetch(`http://localhost:5000/api/orders/payment/${paymentIntentId}`, {
+      const response = await fetch(`http://localhost:5000/api/stripe/payment/${paymentIntentId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

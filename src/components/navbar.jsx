@@ -42,6 +42,7 @@ const Navbar = () => {
     setIsAuthenticated(false);
     setIsAdmin(false);
     navigate('/');
+    window.location.reload();
   };
 
   const { theme } = useContext(ThemeContext);
