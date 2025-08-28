@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
+import { useProductUpdate } from '../context/ProductUpdateContext';
 import './ShopPage.css';
 
 const ShopPage = () => {
@@ -11,9 +12,11 @@ const ShopPage = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
+  const { updateFlag } = useProductUpdate();
+
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [updateFlag]);
 
   const fetchProducts = async () => {
     try {

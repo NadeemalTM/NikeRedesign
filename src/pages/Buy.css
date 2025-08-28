@@ -105,6 +105,7 @@
   content: '🔒 ';
   font-weight: 600;
 }
+
 .buy-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -405,6 +406,43 @@
   .buy-header h1 {
     font-size: 1.8rem;
   }
+  
+  /* Payment details mobile optimization */
+  .payment-details {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .payment-details h4 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .payment-details .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .card-icons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .card-icon {
+    width: 35px;
+    height: 22px;
+    font-size: 0.7rem;
+  }
+  
+  .payment-details input {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+  
+  .security-note {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -425,6 +463,106 @@
   .continue-shopping-btn {
     padding: 0.875rem 1.5rem;
     font-size: 1rem;
+  }
+  
+  /* Extra small devices optimization */
+  .buy-container {
+    padding: 0.5rem;
+    margin-top: 60px;
+  }
+  
+  .buy-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .buy-header p {
+    font-size: 1rem;
+  }
+  
+  .payment-details {
+    padding: 0.75rem;
+  }
+  
+  .payment-details h4 {
+    font-size: 0.95rem;
+  }
+  
+  .card-icons {
+    gap: 0.25rem;
+  }
+  
+  .card-icon {
+    width: 30px;
+    height: 20px;
+    font-size: 0.6rem;
+  }
+  
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .security-note {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+}
+
+/* Tablet landscape optimization */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .buy-content {
+    gap: 1.5rem;
+  }
+  
+  .checkout-form,
+  .order-summary {
+    padding: 1.5rem;
+  }
+  
+  .payment-details .form-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Large desktop optimization */
+@media (min-width: 1440px) {
+  .buy-container {
+    max-width: 1400px;
+    padding: 3rem;
+  }
+  
+  .buy-content {
+    gap: 3rem;
+  }
+  
+  .checkout-form,
+  .order-summary {
+    padding: 2.5rem;
+  }
+  
+  .payment-details {
+    padding: 2rem;
+  }
+  
+  .payment-details h4 {
+    font-size: 1.2rem;
+  }
+  
+  .card-icons {
+    gap: 0.75rem;
+  }
+  
+  .card-icon {
+    width: 45px;
+    height: 28px;
+    font-size: 0.9rem;
   }
 }
 

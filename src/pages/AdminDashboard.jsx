@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
+import { useProductUpdate } from '../context/ProductUpdateContext';
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('products'); // Default tab
+  const [feedbackMessages, setFeedbackMessages] = useState([]); // State for feedback messages
   const [users, setUsers] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,11 +24,14 @@ const AdminDashboard = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
+  const { triggerUpdate } = useProductUpdate();
+
   useEffect(() => {
     checkAdminAuth();
     fetchProducts();
     fetchUsers();
     fetchContacts();
+    fetchFeedbackMessages();
   }, []);
 
   const checkAdminAuth = () => {
@@ -76,6 +81,24 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       console.error('Error fetching users:', error);
+    }
+  };
+
+  const fetchFeedbackMessages = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/dashboard/feedback', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setFeedbackMessages(data.feedbackMessages);
+      }
+    } catch (error) {
+      console.error('Error fetching feedback messages:', error);
     }
   };
 
@@ -138,19 +161,20 @@ const AdminDashboard = () => {
 
       if (response.ok) {
         const newProduct = await response.json();
-        setProducts(prev => [newProduct, ...prev]);
-        setShowAddModal(false);
-        setFormData({
-          name: '',
-          description: '',
-          price: '',
-          category: '',
-          stock: '',
-          brand: 'Nike'
-        });
-        setImageFile(null);
-        setSuccess('Product added successfully!');
-        setTimeout(() => setSuccess(''), 3000);
+      setProducts(prev => [newProduct, ...prev]);
+      setShowAddModal(false);
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        stock: '',
+        brand: 'Nike'
+      });
+      setImageFile(null);
+      setSuccess('Product added successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+      triggerUpdate();
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Failed to add product');
@@ -200,6 +224,7 @@ const AdminDashboard = () => {
                     alt={product.name} 
                     className="product-image"
                     onError={(e) => {
+                      console.error('Image load error for:', e.target.src);
                       e.target.onerror = null;
                       e.target.src = '/placeholder.jpg';
                     }}
@@ -286,6 +311,24 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
+      case 'feedback':
+        return (
+          <div className="feedback-section">
+            <h2>Feedback Messages ({feedbackMessages.length})</h2>
+            <div className="feedback-grid">
+              {feedbackMessages.map(feedback => (
+                <div key={feedback._id} className="feedback-card">
+                  <h3>{feedback.subject}</h3>
+                  <p><strong>From:</strong> {feedback.firstName} {feedback.lastName}</p>
+                  <p><strong>Email:</strong> {feedback.email}</p>
+                  {feedback.phone && <p><strong>Phone:</strong> {feedback.phone}</p>}
+                  <p><strong>Message:</strong> {feedback.message}</p>
+                  <p><strong>Received:</strong> {new Date(feedback.createdAt).toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -328,6 +371,12 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab('contacts')}
         >
           Messages ({contacts.length})
+        </button>
+        <button 
+          className={activeTab === 'feedback' ? 'tab-btn active' : 'tab-btn'}
+          onClick={() => setActiveTab('feedback')}
+        >
+          Feedback ({feedbackMessages.length})
         </button>
       </div>
 

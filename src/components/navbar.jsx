@@ -1,9 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './navbar.module.css';
 import { useCart } from '../context/CartContext';
-import { ThemeContext } from '../context/ThemeContext';
-import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -45,12 +43,9 @@ const Navbar = () => {
     window.location.reload();
   };
 
-  const { theme } = useContext(ThemeContext);
-
   return (
     <nav 
       className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
-      data-theme={theme}
     >
       <div className={styles.navContainer}>
         {/* Logo */}
@@ -122,8 +117,6 @@ const Navbar = () => {
             )}
           </Link>
 
-          {/* Theme Toggle */}
-          <ThemeToggle />
         </div>
       </div>
     </nav>

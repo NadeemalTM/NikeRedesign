@@ -18,15 +18,15 @@ import OrderSuccess from "./pages/OrderSuccess";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import Profile from "./pages/Profile";
 import { CartProvider } from "./context/CartContext";
-import { ThemeProvider } from "./context/ThemeContext.jsx";
+import { ProductUpdateProvider } from "./context/ProductUpdateContext";
 import "./App.css";
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider>
-        <ToastProvider>
-          <CartProvider>
+      <ToastProvider>
+        <CartProvider>
+          <ProductUpdateProvider>
             <Navbar />
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -45,9 +45,9 @@ function App() {
             </Routes>
             <Footer />
             <Toast />
-          </CartProvider>
-        </ToastProvider>
-      </ThemeProvider>
+          </ProductUpdateProvider>
+        </CartProvider>
+      </ToastProvider>
     </ErrorBoundary>
   );
 }
